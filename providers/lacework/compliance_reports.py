@@ -75,3 +75,51 @@ def compliance_reports_azure(azure_tenant_ids ='',lw_provider={}):
                 continue
        
     return results
+
+def compliance_reports_gcp(org_ids ='',lw_provider={}):
+    results = {}
+    
+    for org_id in org_ids:
+        # get Projects
+        gcp_projects = lw_provider.gcp_projects(org_id=org_id)
+        count = 0
+
+        for gcp_project in gcp_projects:
+            count += 1
+            project_id = gcp_project
+            try:
+                start = gcp_project.index(' (')
+                project_id = gcp_project[:start]
+            except:
+                project_id = gcp_project 
+            
+            results[project_id] = []
+            try:
+                logger.info('Getting compliance report for GCP Project: ' + gcp_project)
+                a = lw().reports.get(
+                    primary_query_id=org_id,
+                    secondary_query_id=project_id,
+                    type="COMPLIANCE",
+                    report_type="GCP_CIS", # AZURE_CIS, # AZURE_CIS_131"
+                    format="json",
+                    latest=True
+                )
+
+                report = a['data'][0]
+                recommendations = report['recommendations']
+                reportType = report['reportType']
+            
+                rows = []
+                for row in recommendations:
+                    row['reportType']= reportType
+                    rows.append(row)
+
+                results[project_id].append(rows)
+            
+            except LWApiError:
+                logger.warning('Could not get compliance report for GCP Project: ' + gcp_project)
+                continue
+            if count > 1:
+                break
+       
+    return results

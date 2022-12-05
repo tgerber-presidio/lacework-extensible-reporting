@@ -373,6 +373,9 @@
       {% if azure_compliance_data %}
         {% set _ = summary_data.append('Azure Subscriptions Analyzed: ' ~ azure_compliance_data.cloud_accounts_count) %}
       {% endif %}
+      {% if gcp_compliance_data %}
+        {% set _ = summary_data.append('GCP Projects Analyzed: ' ~ gcp_compliance_data.cloud_accounts_count) %}
+      {% endif %}
       {% if host_vulns_data %}
         {% set _ = summary_data.append('Hosts Scanned: ' ~ host_vulns_data.hosts_scanned_count) %}
       {% endif %}
@@ -412,7 +415,7 @@
       {% if compliance_data %}
         <div class="box">
           <span>{{compliance_data.critical_finding_count}}</span>
-          <p>Total Critical Cloud Compliance Findings</p>
+          <p>Total Critical AWS Compliance Findings</p>
           <div class="gradient"></div>
         </div>
       {% endif %}
@@ -423,7 +426,14 @@
           <p>Total Critical Azure Compliance Findings</p>
           <div class="gradient"></div>
         </div>
-       
+      {% endif %}
+
+      {% if gcp_compliance_data %}
+        <div class="box">
+          <span>{{gcp_compliance_data.critical_finding_count}}</span>
+          <p>Total Critical GCP Compliance Findings</p>
+          <div class="gradient"></div>
+        </div>
       {% endif %}
 
       {% if event_data %}
@@ -483,6 +493,18 @@
       {{ azure_compliance_data.compliance_summary.to_html(index=False) | safe }}
       {{ azure_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
       {{ azure_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+      
+    {% endif %}
+
+    {% if gcp_compliance_data %}
+      <h4>GCP</h4>
+
+      <p><b>
+        Total GCP Projects Analyzed: {{gcp_compliance_data.cloud_accounts_count}}
+      </b></p>
+      {{ gcp_compliance_data.compliance_summary.to_html(index=False) | safe }}
+      {{ gcp_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+      {{ gcp_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
       
     {% endif %}
 
@@ -554,6 +576,11 @@
         <h4>Azure</h4>
         <p></p>
         {{ azure_compliance_data.compliance_detail.to_html(index=False) | safe }}
+      {% endif %}
+      {% if gcp_compliance_data %}
+        <h4>GCP</h4>
+        <p></p>
+        {{ gcp_compliance_data.compliance_detail.to_html(index=False) | safe }}
       {% endif %}
     {% endif %}
    

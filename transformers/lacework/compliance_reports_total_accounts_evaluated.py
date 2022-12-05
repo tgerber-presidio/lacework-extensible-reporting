@@ -15,3 +15,10 @@ def compliance_reports_total_accounts_evaluated_azure(compliance_reports):
     unique_accounts = df['SUBSCRIPTION_ID'].nunique()
 
     return unique_accounts
+
+def compliance_reports_total_accounts_evaluated_gcp(compliance_reports):
+    df = pd.DataFrame(compliance_reports)
+
+    unique_accounts = df['PROJECT_ID'].nunique()
+
+    return unique_accounts

@@ -26,4 +26,6 @@ from .host_vulns import host_vulns
 from .integrations import integrations
 from .compliance_reports import compliance_reports
 from .compliance_reports import compliance_reports_azure
+from .compliance_reports import compliance_reports_gcp
 from .azure_subscriptions import azure_subscriptions
+from .gcp_projects import gcp_projects

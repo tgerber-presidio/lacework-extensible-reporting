@@ -82,10 +82,9 @@ def compliance_reports_gcp(org_ids ='',lw_provider={}):
     for org_id in org_ids:
         # get Projects
         gcp_projects = lw_provider.gcp_projects(org_id=org_id)
-        count = 0
 
         for gcp_project in gcp_projects:
-            count += 1
+
             project_id = gcp_project
             try:
                 start = gcp_project.index(' (')
@@ -119,7 +118,5 @@ def compliance_reports_gcp(org_ids ='',lw_provider={}):
             except LWApiError:
                 logger.warning('Could not get compliance report for GCP Project: ' + gcp_project)
                 continue
-            if count > 1:
-                break
        
     return results

@@ -25,6 +25,8 @@ def generate_report(_shared, report_save_path, use_cached_data):
 
     polygraph_graphic_bytes = _shared.p_local_asset.local_file(os.path.join(basedir, 'assets/lacework/images/polygraph-info.png'))
     polygraph_graphic_html = _shared.common.bytes_to_image_tag(polygraph_graphic_bytes,'png')
+    presidio_logo_bytes = _shared.p_local_asset.local_file(os.path.join(basedir, 'assets/lacework/images/presidio_logo.png'))
+    presidio_logo_html = _shared.common.bytes_to_image_tag(presidio_logo_bytes,'png')
 
     templateLoader = jinja2.FileSystemLoader(searchpath=os.path.join(basedir, "reports/jinja2/"))
     templateEnv = jinja2.Environment(loader=templateLoader, autoescape=True, trim_blocks=True, lstrip_blocks=True)
@@ -35,6 +37,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
         date                                       = datetime.now().strftime("%A %B %d, %Y"),
         author                                     = _shared.cli_data['author'],
         polygraph_graphic_html                     = polygraph_graphic_html,
+        presidio_logo_html                         = presidio_logo_html,
         compliance_data                            = compliance_data,
         azure_compliance_data                      = azure_compliance_data,
         gcp_compliance_data                        = gcp_compliance_data,
@@ -149,13 +152,22 @@ def gather_compliance_data(_shared, lw_provider):
     else:
         critical_finding_count = 0
 
+    if 'High' in compliance_findings_summary_for_graphic.columns:
+        high_finding_count = compliance_findings_summary_for_graphic['High'].sum()
+    else:
+        high_finding_count = 0
+
+    total_finding_count = critical_finding_count + high_finding_count
+
     return {
         'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated(compliance_reports),
         'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
         'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
         'compliance_detail': compliance_detail,
-        'critical_finding_count': round(critical_finding_count)
+        'critical_finding_count': round(critical_finding_count),
+        'high_finding_count': round(high_finding_count),
+        'total_finding_count': round(total_finding_count)
     }
 
 def gather_compliance_data_azure(_shared, lw_provider):
@@ -196,13 +208,22 @@ def gather_compliance_data_azure(_shared, lw_provider):
     else:
         critical_finding_count = 0
 
+    if 'High' in compliance_findings_summary_for_graphic.columns:
+        high_finding_count = compliance_findings_summary_for_graphic['High'].sum()
+    else:
+        high_finding_count = 0
+
+    total_finding_count = critical_finding_count + high_finding_count
+
     return {
         'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated_azure(azure_compliance_reports),
         'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
         'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
         'compliance_detail': compliance_detail,
-        'critical_finding_count': round(critical_finding_count)
+        'critical_finding_count': round(critical_finding_count),
+        'high_finding_count': round(high_finding_count),
+        'total_finding_count': round(total_finding_count)
     }
 
 def gather_compliance_data_gcp(_shared, lw_provider):
@@ -243,13 +264,22 @@ def gather_compliance_data_gcp(_shared, lw_provider):
     else:
         critical_finding_count = 0
 
+    if 'High' in compliance_findings_summary_for_graphic.columns:
+        high_finding_count = compliance_findings_summary_for_graphic['High'].sum()
+    else:
+        high_finding_count = 0
+
+    total_finding_count = critical_finding_count + high_finding_count
+
     return {
         'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated_gcp(gcp_compliance_reports),
         'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
         'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
         'compliance_detail': compliance_detail,
-        'critical_finding_count': round(critical_finding_count)
+        'critical_finding_count': round(critical_finding_count),
+        'high_finding_count': round(high_finding_count),
+        'total_finding_count': round(total_finding_count)
     }
 
 def gather_event_data(_shared, lw_provider):

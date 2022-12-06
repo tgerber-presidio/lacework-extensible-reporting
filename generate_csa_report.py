@@ -39,7 +39,7 @@ def main():
     
     #generate a save file name for the report output html
     date = datetime.now().strftime("%m-%d-%y")
-    report_save_path = f"CSA_Report_{str(args.customer).replace(' ', '_')}_{date}.html"
+    report_save_path = f"CSPA_Report_{str(args.customer).replace(' ', '_')}_{date}.html"
     print(f"Report will be saved to filename {report_save_path}")
     
     #generate a path to the report generator python
